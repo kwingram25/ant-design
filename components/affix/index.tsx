@@ -65,7 +65,7 @@ export default class Affix extends React.Component<AffixProps, any> {
     offsetTop: PropTypes.number,
     offsetBottom: PropTypes.number,
     target: PropTypes.func,
-    minWidth: PropTypes.number
+    minWidth: PropTypes.number,
   };
 
   scrollEvent: any;

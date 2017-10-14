@@ -19,7 +19,7 @@ import { Affix, Button } from 'antd';
 ReactDOM.render(
   <div>
     <Affix minWidth={1000}>
-      <Button type="primary">Affix if window > 1000px</Button>
+      <Button type="primary">Affix if window &gt; 1000px</Button>
     </Affix>
   </div>,
   mountNode
