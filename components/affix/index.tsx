@@ -51,6 +51,7 @@ export interface AffixProps {
   offset?: number;
   /** 距离窗口底部达到指定偏移量后触发 */
   offsetBottom?: number;
+  minWidth?: number;
   style?: React.CSSProperties;
   /** 固定状态改变时触发的回调函数 */
   onChange?: (affixed?: boolean) => void;
@@ -64,6 +65,7 @@ export default class Affix extends React.Component<AffixProps, any> {
     offsetTop: PropTypes.number,
     offsetBottom: PropTypes.number,
     target: PropTypes.func,
+    minWidth: PropTypes.number
   };
 
   scrollEvent: any;
@@ -122,7 +124,7 @@ export default class Affix extends React.Component<AffixProps, any> {
 
   @throttleByAnimationFrameDecorator()
   updatePosition(e) {
-    let { offsetTop, offsetBottom, offset, target = getDefaultTarget } = this.props;
+    let { offsetTop, offsetBottom, offset, minWidth = 0, target = getDefaultTarget } = this.props;
     const targetNode = target();
 
     // Backwards support
@@ -151,7 +153,8 @@ export default class Affix extends React.Component<AffixProps, any> {
     const targetRect = getTargetRect(targetNode);
     const targetInnerHeight =
       (targetNode as Window).innerHeight || (targetNode as HTMLElement).clientHeight;
-    if (scrollTop > elemOffset.top - (offsetTop as number) && offsetMode.top) {
+
+    if (scrollTop > elemOffset.top - (offsetTop as number) && offsetMode.top && window.innerWidth > minWidth) {
       // Fixed Top
       const width = elemOffset.width;
       this.setAffixStyle(e, {
@@ -166,7 +169,7 @@ export default class Affix extends React.Component<AffixProps, any> {
       });
     } else if (
       scrollTop < elemOffset.top + elemSize.height + (offsetBottom as number) - targetInnerHeight &&
-        offsetMode.bottom
+        offsetMode.bottom && window.innerWidth > minWidth
     ) {
       // Fixed Bottom
       const targetBottomOffet = targetNode === window ? 0 : (window.innerHeight - targetRect.bottom);
@@ -242,7 +245,7 @@ export default class Affix extends React.Component<AffixProps, any> {
       [this.props.prefixCls || 'ant-affix']: this.state.affixStyle,
     });
 
-    const props = omit(this.props, ['prefixCls', 'offsetTop', 'offsetBottom', 'target', 'onChange']);
+    const props = omit(this.props, ['prefixCls', 'offsetTop', 'offsetBottom', 'minWidth', 'target', 'onChange']);
     const placeholderStyle = { ...this.state.placeholderStyle, ...this.props.style };
     return (
       <div {...props} style={placeholderStyle}>
